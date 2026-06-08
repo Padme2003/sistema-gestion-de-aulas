@@ -1,0 +1,104 @@
+<button 
+  class="toggle-sidebar-btn"
+  [class.collapsed]="isCollapsed"
+  (click)="toggleSidebar()"
+  [attr.aria-label]="isCollapsed ? 'Mostrar menú' : 'Ocultar menú'">
+
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" [class.rotated]="isCollapsed">
+    <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="logo">
+      <img src="assets/logo_Yavirac.png" alt="Logo YAVIRAC" class="logo-image-sidebar">
+    </div>
+    <p class="slogan">Fortaleciendo Capacidades</p>
+    <div class="user-info">
+      <p class="user-name-sidebar">{{ currentUser }}</p>
+      <p class="user-role">{{ userRole }}</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button 
+      *ngFor="let item of getVisibleMenuItems()" 
+      class="nav-item" 
+      [class.active]="isActive(item.route)" 
+      (click)="navigateTo(item.route)">
+      {{ item.label }}
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-cerrar-sesion" (click)="cerrarSesion()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="logout-icon">
+        <path d="M13 3H4C3.45 3 3 3.45 3 4V16C3 16.55 3.45 17 4 17H13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17 10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 7L17 10L14 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Cerrar Sesión
+    </button>
+  </div>
+</div>
+
+<!-- Modal de Confirmaci?n Cerrar Sesi?n -->
+<div class="modal-overlay" *ngIf="showConfirmLogout" (click)="cancelarCerrarSesion()">
+  <div class="modal-content logout-modal" (click)="$event.stopPropagation()">
+    <div class="modal-icon-wrapper">
+<svg
+  width="48"
+  height="48"
+  viewBox="0 0 48 48"
+  fill="none"
+  class="logout-modal-icon"
+  xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Círculo -->
+  <circle
+    cx="24"
+    cy="24"
+    r="22"
+    stroke="currentColor"
+    stroke-width="2"
+    fill="none" />
+
+  <!-- Puerta -->
+  <rect
+    x="14"
+    y="12"
+    width="10"
+    height="24"
+    rx="2"
+    stroke="currentColor"
+    stroke-width="2"
+    fill="none" />
+
+  <!-- Flecha de salida -->
+  <path
+    d="M24 24H34"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round" />
+
+  <path
+    d="M30 20L34 24L30 28"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round" />
+</svg>
+
+    </div>
+    <h3 class="modal-title-logout">Estas seguro de cerrar sesión?</h3>
+    <p class="modal-message-logout">Se cerrara su sesion actual y sera redirigido a la página de inicio de sesión.</p>
+    <div class="modal-actions-logout">
+      <button class="btn-cancelar-logout" (click)="cancelarCerrarSesion()">Cancelar</button>
+      <button class="btn-confirmar-logout" (click)="confirmarCerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
+</div>
+

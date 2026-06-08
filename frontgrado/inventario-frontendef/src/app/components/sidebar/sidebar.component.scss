@@ -1,0 +1,535 @@
+.sidebar {
+  width: 300px;
+  background: linear-gradient(180deg, #ff6f00 0%, #ff8f00 100%);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.toggle-sidebar-btn {
+  position: fixed;
+  top: 20px;
+  left: 300px;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(180deg, #ff6f00 0%, #ff8f00 100%);
+  border: none;
+  border-radius: 0 10px 10px 0;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* CUANDO EL SIDEBAR ESTÁ CERRADO */
+.toggle-sidebar-btn.collapsed {
+  left: 0;
+}
+
+
+// Ajuste para diferentes alturas de header
+@media (max-width: 768px) {
+  body.sidebar-collapsed .toggle-sidebar-btn {
+    top: 10px;
+  }
+}
+
+.toggle-sidebar-btn:hover {
+  background: linear-gradient(180deg, #ff8f00 0%, #ffa726 100%);
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.25);
+  transform: translateX(3px);
+}
+
+.toggle-sidebar-btn:active {
+  transform: translateX(1px);
+}
+
+.toggle-sidebar-btn svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-sidebar-btn svg.rotated {
+  transform: rotate(180deg);
+}
+
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.sidebar-header {
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.logo-image-sidebar {
+  width: 100%;
+  max-width: 190px;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.logo-image-sidebar:hover {
+  transform: scale(1.05);
+  filter: brightness(0) invert(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.slogan {
+  color: white;
+  font-size: 11px;
+  text-align: center;
+  opacity: 0.95;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.user-info {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 15px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.user-name-sidebar {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.user-role {
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.nav-item {
+  background: rgba(255, 255, 255, 0.18);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.nav-item:hover::before {
+  opacity: 1;
+}
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25),
+              inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.nav-item.active::before {
+  opacity: 1;
+}
+
+.nav-item:active {
+  transform: translateY(-1px);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.btn-cerrar-sesion {
+  width: 100%;
+  background: rgba(244, 67, 54, 0.2);
+  border: 2px solid rgba(244, 67, 54, 0.4);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-cerrar-sesion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.3) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-cerrar-sesion:hover {
+  background: rgba(244, 67, 54, 0.35);
+  border-color: rgba(244, 67, 54, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-cerrar-sesion:hover::before {
+  opacity: 1;
+}
+
+.btn-cerrar-sesion:active {
+  transform: translateY(0);
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+// Modal de Confirmación Cerrar Sesión
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+
+.logout-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+.modal-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+
+
+.logout-modal-icon {
+  color: #f44336;
+  width: 64px;
+  height: 80px;
+}
+
+.modal-title-logout {
+  color: #333;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.modal-message-logout {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
+.modal-actions-logout {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-cancelar-logout {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.btn-cancelar-logout:hover {
+  background: #d0d0d0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-confirmar-logout {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.btn-confirmar-logout:hover {
+  background: #da190b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+// Scrollbar personalizado para el sidebar
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+// Media queries para responsive
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 280px;
+    padding: 18px 18px;
+  }
+
+  .toggle-sidebar-btn {
+    left: 280px;
+  }
+
+  body.sidebar-collapsed .toggle-sidebar-btn {
+    left: 0;
+  }
+
+  .logo-image-sidebar {
+    max-width: 170px;
+  }
+
+  .nav-item {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .toggle-sidebar-btn {
+    width: 40px;
+    height: 40px;
+    top: 15px;
+  }
+
+  .toggle-sidebar-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    min-height: auto;
+  }
+
+  .logo-image-sidebar {
+    max-width: 150px;
+  }
+
+  .nav-item {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .logout-modal {
+    padding: 30px 20px;
+    max-width: 90%;
+  }
+
+  .modal-actions-logout {
+    flex-direction: column;
+  }
+
+  .btn-cancelar-logout,
+  .btn-confirmar-logout {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 15px;
+  }
+
+  .sidebar-header {
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .logo-image-sidebar {
+    max-width: 130px;
+  }
+
+  .slogan {
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+
+  .user-info {
+    padding: 10px;
+    margin-top: 12px;
+  }
+
+  .user-name-sidebar {
+    font-size: 13px;
+  }
+
+  .user-role {
+    font-size: 11px;
+  }
+
+  .nav-item {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .btn-cerrar-sesion {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+

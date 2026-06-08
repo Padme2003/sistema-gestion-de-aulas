@@ -1,0 +1,154 @@
+<div class="portal-container">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+    <div class="header">
+      <h1 class="welcome">¡Bienvenido/a, <span class="user-name">{{ currentUser }}</span>!</h1>
+    </div>
+
+    <div class="portal-content">
+    <div class="main-title-section">
+      <div>
+        <h2 class="main-title">Solicitud de Cambio de Aulas</h2>
+        <p class="main-subtitle">Registra tus solicitudes y revisa el historial en tiempo real.</p>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Sección Crear Nueva Solicitud -->
+      <div class="form-section">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title">Crear Nueva Solicitud</h3>
+            <p class="section-subtitle">Selecciona el aula, el bien y describe el requerimiento.</p>
+          </div>
+        </div>
+        
+        <form (ngSubmit)="enviarSolicitud()">
+          <div class="form-group">
+            <label for="aula">Aula</label>
+            <select
+              id="aula"
+              [(ngModel)]="aulaSeleccionada"
+              name="aula"
+              required
+              (ngModelChange)="onAulaChange()"
+              class="form-select">
+              <option [ngValue]="null" disabled>Seleccione un aula</option>
+              <option *ngFor="let aula of aulasAsignadas" [ngValue]="aula.idAula">
+                {{ aula.nombre }}
+              </option>
+              <option *ngIf="aulasAsignadas.length === 0" disabled>No hay aulas asignadas</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bien">Bien</label>
+            <select 
+              id="bien" 
+              [(ngModel)]="bienSeleccionado" 
+              name="bien" 
+              required
+              class="form-select"
+              [disabled]="!aulaSeleccionada || getBienesAsignados().length === 0">
+              <option [ngValue]="null">Seleccione un bien</option>
+              <option *ngFor="let bien of getBienesAsignados()" [ngValue]="bien.idBien">
+                {{ bien.nombreBien }}
+              </option>
+              <option *ngIf="aulaSeleccionada && getBienesAsignados().length === 0" disabled>
+                No hay bienes disponibles en esta aula
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">Tipo de Solicitud</label>
+            <select 
+              id="tipo"
+              name="tipo"
+              [(ngModel)]="tipoSolicitud"
+              class="form-select"
+              required>
+              <option value="">Seleccione el tipo</option>
+              <option *ngFor="let tipo of tiposSolicitud" [value]="tipo">
+                {{ tipo }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="detalle">Detalle del Problema / Requerimiento</label>
+            <textarea 
+              id="detalle"
+              name="detalle"
+              [(ngModel)]="detalleProblema"
+              class="form-textarea"
+              placeholder="Describa el problema o el cambio que necesita..."
+              rows="6"
+              required></textarea>
+          </div>
+
+          <button type="submit" class="btn-enviar">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="envelope-icon">
+              <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M2 6L10 11L18 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Enviar Solicitud
+          </button>
+        </form>
+      </div>
+
+      <!-- Sección Historial -->
+      <div class="history-section">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title">Historial de Mis Solicitudes</h3>
+            <p class="section-subtitle">Seguimiento de solicitudes enviadas.</p>
+          </div>
+          <span class="section-count">{{ misSolicitudes.length }} solicitudes</span>
+        </div>
+        
+        <div class="table-container">
+          <table class="solicitudes-table">
+            <thead>
+              <tr>
+                <th>AULA</th>
+                <th>TIPO</th>
+                <th>DETALLE</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let solicitud of misSolicitudes">
+                <td>{{ solicitud.bien?.aula?.nombre || 'N/A' }}</td>
+                <td>{{ getTipoSolicitud(solicitud) }}</td>
+                <td>{{ getDetalleSolicitud(solicitud) }}</td>
+                <td>
+                  <span 
+                    [class]="'estado-badge ' + (solicitud.estado ? solicitud.estado.toLowerCase() : 'pendiente')"
+                    [class.aprobada]="solicitud.estado === 'APROBADA'">
+                    <span class="estado-dot"></span>
+                    {{ solicitud.estado || 'PENDIENTE' }}
+                  </span>
+                </td>
+
+              </tr>
+              <tr *ngIf="misSolicitudes.length === 0">
+                <td colspan="4" class="no-data">No hay solicitudes registradas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Toast de éxito / error -->
+<div class="toast-message" 
+     [class.show]="showToast" 
+     [class.success]="toastType === 'success'" 
+     [class.error]="toastType === 'error'">
+  {{ toastMessage }}
+  <button class="close-toast" (click)="closeToast()">×</button>
+</div>
+

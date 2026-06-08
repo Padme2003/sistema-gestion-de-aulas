@@ -1,0 +1,514 @@
+<div class="inventario-container">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+    <div class="header">
+      <h1 class="welcome">
+        ¡Bienvenido/a, <span class="user-name">{{ currentUser }}</span>!
+      </h1>
+    </div>
+
+    <div class="content-area">
+      <h2 class="page-title">INVENTARIO</h2>
+
+      <!-- TARJETAS RESUMEN -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="card-number">{{ totalBienes || 0 }}</div>
+          <div class="card-label">TOTAL BIENES</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-number">{{ totalCategorias || 0 }}</div>
+          <div class="card-label">CATEGORÍAS</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-number">{{ bienesDisponibles || 0 }}</div>
+          <div class="card-label">BIENES DISPONIBLES</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-number">{{ bienesAsignados || 0 }}</div>
+          <div class="card-label">BIENES ASIGNADOS</div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <!-- ACCIONES -->
+        <div class="actions-bar">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="BUSCAR POR CÓDIGO..."
+            [(ngModel)]="searchTerm"
+            name="searchTerm"
+            (input)="onSearch()"
+          />
+
+          <button class="add-button" type="button" (click)="openAddModal()">
+            Añadir Nuevo Bien
+          </button>
+
+          <button class="category-button" type="button" (click)="openCategoryModal()">
+            Nueva Categoría
+          </button>
+
+          <div class="filter-dropdown-wrapper">
+            <button class="show-all-button" type="button" (click)="toggleFilterDropdown()">
+              {{ selectedFilter }}
+            </button>
+
+            <div class="filter-dropdown" *ngIf="showFilterDropdown">
+              <button
+                *ngFor="let option of filterOptions"
+                type="button"
+                class="filter-option"
+                (click)="selectFilter(option)">
+                {{ option }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-container">
+          <table class="inventario-table">
+            <thead>
+              <tr>
+                <th>CÓDIGO</th>
+                <th>NOMBRE</th>
+                <th>CATEGORÍA</th>
+                <th>TIPO</th>
+                <th>UBICACIÓN</th>
+                <th>AULA</th>
+                <th>ESTADO</th>
+                <th>VALOR</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+
+        <tbody>
+  <tr *ngFor="let bien of filteredBienes">
+    <td>{{ bien.codigoBien }}</td>
+    <td>{{ bien.nombreBien }}</td>
+    <td>{{ bien.categoria?.nombre || 'Sin categoría' }}</td>
+    <td>{{ bien.tipoBien }}</td>
+    <td>{{ bien.ubicacion }}</td>
+    <td>{{ bien.aula?.nombre || 'Sin asignar' }}</td>
+
+    <td>
+      <span class="status-badge">{{ bien.estado }}</span>
+    </td>
+
+    <td>
+      ${{ bien.valorCompraInicial | number:'1.2-2' }}
+    </td>
+
+    <td>
+      <button class="action-btn view-btn" (click)="openEditModal(bien)" title="Editar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="action-btn delete-btn" (click)="deleteBien(bien)" title="Eliminar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </td>
+  </tr>
+
+  <tr *ngIf="filteredBienes.length === 0">
+    <td colspan="8" class="no-data">No hay bienes registrados</td>
+  </tr>
+</tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CREAR BIEN -->
+<div class="modal-overlay" *ngIf="showAddModal">
+  <div class="modal-content large-modal">
+
+    <div class="modal-header">
+      <h2>Registrar Bien</h2>
+      <p class="modal-subtitle">Complete los datos principales del bien.</p>
+    </div>
+
+    <form class="modal-form grid-form" (ngSubmit)="saveBien()">
+
+      <div class="form-section">
+        <h3 class="section-title">Identificación</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Código del bien</label>
+            <input type="text" [(ngModel)]="nuevoBien.codigoBien"
+                   name="codigoBien" placeholder="BIEN-001" required>
+          </div>
+
+          <div class="form-field">
+            <label>Código inventario</label>
+            <input type="text" [(ngModel)]="nuevoBien.codigoInventario"
+                   name="codigoInventario" placeholder="INV-2025-01" required>
+          </div>
+
+          <div class="form-field">
+            <label>Código SECAP</label>
+            <input type="text" [(ngModel)]="nuevoBien.codigoSecap"
+                   name="codigoSecap" placeholder="SEC-8899" required>
+          </div>
+
+          <div class="form-field">
+            <label>Cuenta tipo bien</label>
+            <input type="text" [(ngModel)]="nuevoBien.cuentaTipoBien"
+                   name="cuentaTipoBien" placeholder="1.2.3.04" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Datos del bien</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombre del bien</label>
+            <input type="text" [(ngModel)]="nuevoBien.nombreBien"
+                   name="nombreBien" placeholder="Laptop Dell" required>
+          </div>
+
+          <div class="form-field">
+            <label>Tipo de bien</label>
+            <input type="text" [(ngModel)]="nuevoBien.tipoBien"
+                   name="tipoBien" placeholder="Electrónico" required>
+          </div>
+
+          <div class="form-field">
+            <label>Clase del bien</label>
+            <input type="text" [(ngModel)]="nuevoBien.claseBien"
+                   name="claseBien" placeholder="Activo fijo" required>
+          </div>
+
+          <div class="form-field">
+            <label>Categoría</label>
+            <select [(ngModel)]="nuevoBien.categoria.idCategoria"
+                    name="categoria"
+                    required>
+              <option [ngValue]="null">Seleccione una categoría</option>
+              <option *ngFor="let c of categorias" [ngValue]="c.idCategoria">
+                {{ c.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Detalles técnicos</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Marca</label>
+            <input type="text" [(ngModel)]="nuevoBien.marca"
+                   name="marca" placeholder="Dell">
+          </div>
+
+          <div class="form-field">
+            <label>Modelo</label>
+            <input type="text" [(ngModel)]="nuevoBien.modelo"
+                   name="modelo" placeholder="Latitude 5420">
+          </div>
+
+          <div class="form-field">
+            <label>Serie</label>
+            <input type="text" [(ngModel)]="nuevoBien.serie"
+                   name="serie" placeholder="SN123456">
+          </div>
+
+          <div class="form-field full-width">
+            <label>Especificaciones</label>
+            <textarea [(ngModel)]="nuevoBien.especificaciones"
+                      name="especificaciones"
+                      placeholder="Especificaciones técnicas del bien"
+                      rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Valores y ubicación</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Valor compra</label>
+            <input type="number" [(ngModel)]="nuevoBien.valorCompraInicial"
+                   name="valorCompraInicial" placeholder="850" required>
+          </div>
+
+          <div class="form-field">
+            <label>Valor con IVA</label>
+            <input type="number" [(ngModel)]="nuevoBien.valorConIva"
+                   name="valorConIva" placeholder="952" required>
+          </div>
+
+          <div class="form-field">
+            <label>Estado</label>
+            <select [(ngModel)]="nuevoBien.estado" name="estado" required>
+              <option value="">Seleccione</option>
+              <option>Disponible</option>
+              <option>Asignado</option>
+              <option>En Mantenimiento</option>
+              <option>Dañado</option>
+              <option>Baja</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Detalle del Estado</label>
+            <input type="text" [(ngModel)]="nuevoBien.detalleEstado"
+                   name="detalleEstado"
+                   placeholder="Detalle del estado actual">
+          </div>
+
+          <div class="form-field">
+            <label>Ubicación</label>
+            <input type="text" [(ngModel)]="nuevoBien.ubicacion"
+                   name="ubicacion" placeholder="Laboratorio 2" required>
+          </div>
+
+          <div class="form-field">
+            <label>Provincia</label>
+            <input type="text" [(ngModel)]="nuevoBien.provincia"
+                   name="provincia" placeholder="Pichincha" required>
+          </div>
+
+          <div class="form-field">
+            <label>Custodio</label>
+            <input type="text"
+                   [(ngModel)]="nuevoBien.custodio"
+                   name="custodio"
+                   placeholder="Nombre del custodio">
+          </div>
+
+          <div class="form-field">
+            <label>Aula (solo asignadas)</label>
+            <select
+              [(ngModel)]="nuevoBien.aula.idAula"
+              name="idAula"
+              (change)="onAulaSeleccionada(nuevoBien.aula.idAula)"
+            >
+              <option [ngValue]="null">Seleccione un aula</option>
+              <option *ngFor="let a of aulasAsignadas"
+                      [ngValue]="a.idAula">
+                {{ a.nombreAula }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Observaciones</h3>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label>Descripción</label>
+            <textarea [(ngModel)]="nuevoBien.descripcion"
+                      name="descripcion"
+                      placeholder="Descripción detallada del bien"
+                      rows="3"></textarea>
+          </div>
+
+          <div class="form-field full-width">
+            <label>Observaciones</label>
+            <textarea [(ngModel)]="nuevoBien.observaciones"
+                      name="observaciones"
+                      placeholder="Observaciones generales"
+                      rows="3"></textarea>
+          </div>
+
+          <div class="form-field full-width">
+            <label>Observaciones Adicionales</label>
+            <textarea [(ngModel)]="nuevoBien.observaciones2"
+                      name="observaciones2"
+                      placeholder="Observaciones adicionales"
+                      rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions full-width">
+        <button type="submit" class="btn-save">Guardar</button>
+        <button type="button" class="btn-cancel" (click)="closeAddModal()">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+
+<!-- MODAL NUEVA CATEGORÍA -->
+<!-- MODAL CREAR CATEGORÍA -->
+<div class="modal-overlay" *ngIf="showCategoryModal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h2>Nueva Categoría</h2>
+      <p class="modal-subtitle">Cree una categoría para clasificar bienes.</p>
+    </div>
+
+    <form class="modal-form grid-form" (ngSubmit)="saveCategoria()">
+
+      <div class="form-section">
+        <h3 class="section-title">Información</h3>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label>Nombre de la categoría</label>
+            <input
+              type="text"
+              [(ngModel)]="nuevaCategoria.nombre"
+              name="nombre"
+              required
+            />
+          </div>
+
+          <div class="form-field full-width">
+            <label>Descripción</label>
+            <textarea
+              [(ngModel)]="nuevaCategoria.descripcion"
+              name="descripcion"
+              rows="3">
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn-save" >Guardar</button>
+        <button type="button" class="btn-cancel" (click)="closeCategoryModal()">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+
+<!-- MODAL EDITAR BIEN -->
+<div class="modal-overlay" *ngIf="showDetailModal">
+  <div class="modal-content large-modal">
+
+    <h2>Editar Bien</h2>
+
+    <form class="modal-form grid-form" (ngSubmit)="updateBien()">
+
+      <div class="form-field">
+        <label>Código</label>
+        <input type="text" [(ngModel)]="selectedBien.codigoBien"
+               name="codigoBienEdit" required>
+      </div>
+
+      <div class="form-field">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="selectedBien.nombreBien"
+               name="nombreBienEdit" required>
+      </div>
+
+      <div class="form-field">
+        <label>Tipo</label>
+        <input type="text" [(ngModel)]="selectedBien.tipoBien"
+               name="tipoBienEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Clase</label>
+        <input type="text" [(ngModel)]="selectedBien.claseBien"
+               name="claseBienEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Cuenta</label>
+        <input type="text" [(ngModel)]="selectedBien.cuentaTipoBien"
+               name="cuentaTipoBienEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Estado</label>
+        <select [(ngModel)]="selectedBien.estado"
+                name="estadoEdit">
+          <option>Disponible</option>
+          <option>Asignado</option>
+          <option>En Mantenimiento</option>
+          <option>Dañado</option>
+          <option>Baja</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Ubicación</label>
+        <input type="text" [(ngModel)]="selectedBien.ubicacion"
+               name="ubicacionEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Provincia</label>
+        <input type="text" [(ngModel)]="selectedBien.provincia"
+               name="provinciaEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Custodio</label>
+        <input type="text"
+               [(ngModel)]="selectedBien.custodio"
+               name="custodioEdit"
+               placeholder="Nombre del custodio">
+      </div>
+
+      <div class="form-field">
+        <label>Valor compra</label>
+        <input type="number"
+               [(ngModel)]="selectedBien.valorCompraInicial"
+               name="valorCompraEdit">
+      </div>
+
+      <div class="form-field">
+        <label>Valor con IVA</label>
+        <input type="number"
+               [(ngModel)]="selectedBien.valorConIva"
+               name="valorConIvaEdit">
+      </div>
+
+      <div class="form-field">
+  <label>Aula</label>
+ <select
+  [(ngModel)]="selectedBien.aula.idAula"
+  name="aulaEdit"
+  (change)="onAulaSeleccionada(selectedBien.aula.idAula)"
+>
+  <option [ngValue]="null">Seleccione aula</option>
+
+  <option *ngFor="let a of aulasAsignadas"
+          [ngValue]="a.idAula">
+    {{ a.nombreAula }}
+  </option>
+</select>
+</div>
+
+      <div class="form-field full-width">
+        <label>Observaciones</label>
+        <textarea [(ngModel)]="selectedBien.observaciones"
+                  name="observacionesEdit"></textarea>
+      </div>
+
+      <div class="modal-actions full-width">
+        <button type="submit" class="btn-save" >Guardar cambios</button>
+        <button type="button"class="btn-cancel" (click)="closeDetailModal()">Cancelar</button>
+      </div>
+
+    </form>
+  </div>
+</div>
