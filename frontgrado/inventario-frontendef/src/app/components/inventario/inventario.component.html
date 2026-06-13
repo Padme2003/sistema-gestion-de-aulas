@@ -293,16 +293,16 @@
           </div>
 
           <div class="form-field">
-            <label>Aula (solo asignadas)</label>
+            <label>Aula</label>
             <select
               [(ngModel)]="nuevoBien.aula.idAula"
               name="idAula"
               (change)="onAulaSeleccionada(nuevoBien.aula.idAula)"
             >
               <option [ngValue]="null">Seleccione un aula</option>
-              <option *ngFor="let a of aulasAsignadas"
+              <option *ngFor="let a of aulas"
                       [ngValue]="a.idAula">
-                {{ a.nombreAula }}
+                {{ a.nombre }}
               </option>
             </select>
           </div>
@@ -491,9 +491,9 @@
 >
   <option [ngValue]="null">Seleccione aula</option>
 
-  <option *ngFor="let a of aulasAsignadas"
+  <option *ngFor="let a of aulas"
           [ngValue]="a.idAula">
-    {{ a.nombreAula }}
+    {{ a.nombre }}
   </option>
 </select>
 </div>
