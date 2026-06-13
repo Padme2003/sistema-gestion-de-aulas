@@ -1,0 +1,11 @@
+.jdk/
+.m2/
+.npm-cache/
+
+*.log
+
+backgrado/inventario-backdef/backend*.log
+backgrado/inventario-backdef/run-backend.cmd
+backgrado/inventario-backdef/run-backend-log.cmd
+frontgrado/inventario-frontendef/run-frontend.cmd
+

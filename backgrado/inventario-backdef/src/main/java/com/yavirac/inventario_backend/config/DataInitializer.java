@@ -420,6 +420,9 @@ public class DataInitializer implements CommandLineRunner {
                     if (!cedulasProcesadas.add(cedula)) {
                         continue;
                     }
+                    if (usuarioRepository.existsByCedula(cedula)) {
+                        continue;
+                    }
 
                     Rol rolAsignado = null;
                     if (!rolNombre.isEmpty()) {
