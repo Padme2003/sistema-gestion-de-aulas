@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class BienesService {
 
-  private apiUrl = 'http://localhost:8080/api/bienes';
+  private apiUrl = 'https://inventario-backend-k101.onrender.com/api/bienes';
 
   constructor(private http: HttpClient) {}
 

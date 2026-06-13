@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 @Injectable({ providedIn: 'root' })
 export class CategoriasService {
 
-  private apiUrl = 'http://localhost:8080/api/categorias';
+  private apiUrl = 'https://inventario-backend-k101.onrender.com/api/categorias';
 
   constructor(private http: HttpClient) {}
 

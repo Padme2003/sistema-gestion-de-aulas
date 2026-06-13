@@ -39,7 +39,7 @@ export class ApiService {
       Authorization: `Bearer ${token}`
     });
   }
-private baseUrl = 'http://localhost:8080/api'; // Ajusta si usas otro puerto
+private baseUrl = 'https://inventario-backend-k101.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

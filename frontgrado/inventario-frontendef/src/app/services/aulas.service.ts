@@ -8,7 +8,7 @@ import { Aula } from '../models/aula.model';
 })
 export class AulasService {
 
-  private baseUrl = 'http://localhost:8080/api/aulas';
+  private baseUrl = 'https://inventario-backend-k101.onrender.com/api/aulas';
 
   constructor(private http: HttpClient) {}
 
